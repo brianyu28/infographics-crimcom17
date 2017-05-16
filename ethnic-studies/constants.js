@@ -60,9 +60,16 @@ var data = [
         "description": "Description of Program #12 here."
     }
 ];
+var timelineIntervals = [[1970, 2000], [2000, 2020]]
 
 var graphicWidth = 600;
+var graphicHeight = 700;
 var padding = 10;
+var tickSize = 10;
+var labelHeight = 15;
+
+var timelineFontSize = 12;
+var buttonFontSize = 48;
 
 var crimson = '#a82931';
 var blue1 = '#004e6a';
@@ -72,5 +79,7 @@ var green = '#298848';
 var yellow = '#dbd300';
 var white = '#ffffff';
 var black = '#000000';
+
+var timelineColor = black;
 
 var mainFont = '"Merriweather", serif';
