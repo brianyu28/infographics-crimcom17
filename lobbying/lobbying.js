@@ -150,7 +150,7 @@ function colorForGroup(i) {
 }
 
 function animate(svg, point, group) {
-    for (var i = 0; i < glowSize; i++) {
+    for (var i = -5; i < glowSize; i++) {
         var circleSize = (imageSize / 2) + i;
         var glow = svg.insert('circle', 'image')
             .attr('cx', parseFloat(point.attr('x')) + parseFloat(point.attr('width'))/2)
