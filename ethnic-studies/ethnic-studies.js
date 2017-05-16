@@ -5,7 +5,11 @@ window.onload = function() {
 var originX = 0;
 var originY = 0;
 
-timelineHeight = 0.2 * graphicHeight;
+var buttonSize;
+var buttonRadius;
+var enlargedBody = false;
+
+timelineHeight = 0.25 * graphicHeight;
 
 function render() {
     var canvas = d3.select('#ethnic-studies')
@@ -15,7 +19,7 @@ function render() {
 
     var svg = canvas.append('svg')
         .style('width', px(graphicWidth))
-        .style('height', px(graphicHeight))
+        .style('height', px(2 * timelineHeight))
         .style('margin-left', px(padding))
         .style('margin-right', px(padding));
 
@@ -109,8 +113,8 @@ function makeTimeline(svg, x, y, width, height, start, end, interval, years, ind
     }
     
     // compute point sizes
-    var buttonSize = (dateLength / (years.length));
-    var buttonRadius = (buttonSize - padding) / 2;
+    buttonSize = (dateLength / (years.length));
+    buttonRadius = (buttonSize - padding) / 2;
     var currentButtonX = dateStartX;
     
     // create layer for points to prevent overlap
@@ -131,12 +135,22 @@ function makeTimeline(svg, x, y, width, height, start, end, interval, years, ind
             .attr('cy', timelineY)
             .attr('r', 4)
             .attr('fill', timelineColor);
-
+    
+        // show the large button
         var button = svg.append('circle')
             .attr('cx', buttonCenterX)
             .attr('cy', buttonCenterY)
             .attr('r', buttonRadius)
-            .attr('fill', blue2);
+            .attr('fill', buttonColor)
+            .attr('index', index - 1) // for referencing purposes on click
+            .on('mouseover', function() {
+                showDetail(svg, d3.select(this).attr('index'));
+            })
+            .on('click', function() {
+                showDetail(svg, d3.select(this).attr('index'));
+            });
+        animatePoint(button, buttonCenterX, buttonCenterY, buttonRadius,
+                1, 1000 * index / years.length);
 
         // fill the larger button with the number
         var label = svg.append('text')
@@ -144,10 +158,18 @@ function makeTimeline(svg, x, y, width, height, start, end, interval, years, ind
             .attr('y', buttonStartY + 1.4 * buttonRadius )
             .attr('width', buttonRadius * 2)
             .attr('height', buttonRadius * 2)
+            .attr('index', index - 1) // for referencing purposes on click
             .style('font-family', mainFont)
             .style('font-size', buttonFontSize)
             .style('text-anchor', 'middle')
-            .text(index);
+            .text(index)
+            .on('mouseover', function() {
+                showDetail(svg, d3.select(this).attr('index'));
+            })
+            .on('click', function() {
+                showDetail(svg, d3.select(this).attr('index'));
+            });
+        disableSelection(label);
 
         // draw the connecting line
         var conLine = lineLayer.append('path')
@@ -163,4 +185,90 @@ function makeTimeline(svg, x, y, width, height, start, end, interval, years, ind
         currentButtonX += buttonSize;
     }
 
+}
+
+// show detailed information for a proposal
+var selectedIndex = -1;
+var detailElements = [];
+function showDetail(svg, i) {
+    i = parseInt(i);
+
+    if (i === selectedIndex)
+        return;
+    selectedIndex = i;
+    
+    // increase the size of the canvas if necessary
+    if (!enlargedBody) {
+        svg.transition()
+            .duration(500)
+            .style('height', px(graphicHeight))
+            .ease(d3.easeLinear);
+        enlargedBody = true;
+    }
+
+    // get rid of old elements if necessary
+    for (var j = 0; j < detailElements.length; j++) {
+        detailElements[j].remove();
+    }
+    detailElements = [];
+
+    var detailX = originX;
+    var detailY = originY + 2 * timelineHeight;
+    var detailWidth = graphicWidth;
+    var detailHeight = graphicHeight - 2 * timelineHeight;
+
+    // show the button
+    var buttonX = 2 * padding + detailX + (padding / 2) + buttonRadius;
+    var buttonY = 2 * padding + detailY + (padding / 2) + buttonRadius;
+    var button = svg.append('circle')
+        .attr('cx', buttonX)
+        .attr('cy', buttonY)
+        .attr('r', buttonRadius)
+        .attr('fill', buttonColor);
+    detailElements.push(button);
+
+    // show the button text
+    var label = svg.append('text')
+        .attr('x', buttonX)
+        .attr('y', buttonY + 0.4 * buttonRadius)
+        .attr('width', buttonRadius * 2)
+        .attr('height', buttonRadius)
+        .style('font-family', mainFont)
+        .style('font-size', buttonFontSize)
+        .style('fill', timelineColor)
+        .style('text-anchor', 'middle')
+        .text(i + 1);
+    detailElements.push(label);
+
+    // show the proposal name
+    var nameStartX = buttonX + buttonRadius + padding;
+    var name = svg.append('text')
+        .attr('x', nameStartX)
+        .attr('y', buttonY + 0.3 * buttonRadius)
+        .attr('width', detailX + detailWidth - nameStartX)
+        .attr('height', buttonRadius)
+        .style('font-family', mainFont)
+        .style('font-size', nameSize)
+        .style('fill', timelineColor)
+        .style('text-anchor', 'start')
+        .text(data[i]['title'] + ' (' + data[i]['year'] + ')');
+    detailElements.push(name);
+
+    // show the description
+    var descriptionX = 2 * padding + detailX;
+    var descriptionY = 5 * padding + detailY + 2 * buttonRadius;
+    var descriptionWidth = detailX + detailWidth - descriptionX;
+    var descriptionHeight = detailY + detailHeight - descriptionY;
+    var description = svg.append('text')
+        .attr('x', descriptionX)
+        .attr('y', descriptionY)
+        .attr('width', descriptionWidth)
+        .attr('height', descriptionHeight)
+        .attr('text-anchor', 'start')
+        .attr('font-family', mainFont)
+        .attr('font-size', descriptionFontSize)
+        .attr('fill', timelineColor)
+        .text(data[i]['description'])
+        .call(wrap, descriptionWidth);
+    detailElements.push(description);
 }
