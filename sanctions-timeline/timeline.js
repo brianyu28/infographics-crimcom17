@@ -47,7 +47,7 @@ function showIntro(svg) {
     
     // display the first event centered
     var firstEvent = data[0][0];
-    displayItem(svg, firstEvent, graphicWidth / 2 - timelineWidth / 2, 0);
+    displayItem(svg, firstEvent, graphicWidth / 2 - timelineWidth / 2, 0, 1);
 
     // show the button to continue
     var whatfollowed = svg.append('rect')
@@ -96,7 +96,7 @@ function showFull(svg) {
         var curHeight = originY + yStartAdditional;
 
         // show this column's title 
-        svg.append('text')
+        var colTitle = svg.append('text')
             .attr('x', starts[i] + (timelineWidth / 2))
             .attr('y', curHeight - padding)
             .attr('width', timelineWidth)
@@ -105,12 +105,26 @@ function showFull(svg) {
             .style('font-size', nameSize)
             .style('text-anchor', 'middle')
             .style('fill', nameColor)
+            .style('opacity', 0)
             .text(timelineTitles[i]);
+        colTitle.transition()
+            .duration(1500)
+            .style('opacity', 1)
+            .ease(d3.easeLinear);
 
         // show the events
         for (var j = 0; j < data[i].length; j++) {
-            if (data[i][j] !== firstEvent)
-                displayItem(svg, data[i][j], starts[i], curHeight);
+            if (data[i][j] !== firstEvent) {
+                var items = displayItem(svg, data[i][j], starts[i], curHeight, 0); 
+                
+                // fade in the elements over 1.5 seconds
+                for (var k = 0; k < items.length; k++) {
+                    items[k].transition()
+                        .duration(1500)
+                        .style('opacity', 1)
+                        .ease(d3.easeLinear);
+                }
+            }
             curHeight += eventHeight(data[i][j]);
         }
     }
@@ -192,8 +206,9 @@ function moveFirstElement(item, t1Start, yStart) {
 }
 
 // displays a timeline event located at (x, y)
-function displayItem(svg, item, x, y) {
-    
+function displayItem(svg, item, x, y, opacity) {
+    var items = []; // list of all items created, to be returned 
+
     var xCenter = x + (timelineWidth / 2);
     var y_sz = y;
 
@@ -206,8 +221,10 @@ function displayItem(svg, item, x, y) {
             [xCenter, y_sz]
         ]))
         .attr('stroke', timelineColor)
+        .style('opacity', opacity)
         .attr('stroke-width', 3);
     firstEventElts['connection'] = connection;
+    items.push(connection);
     
     // show the event name
     var nameLines = ('nameLines' in item) ? item['nameLines'] : 1;
@@ -221,9 +238,12 @@ function displayItem(svg, item, x, y) {
         .style('font-size', nameSize)
         .style('text-anchor', 'middle')
         .style('fill', nameColor)
+        .style('opacity', opacity)
         .text(item['name'])
         .call(wrap, timelineWidth);
     firstEventElts['name'] = name;
+    items.push(name);
+    items.push(name.selectAll('tspan'));
 
     // show the event date
     y_sz += padding + dateHeight;
@@ -236,8 +256,10 @@ function displayItem(svg, item, x, y) {
         .style('font-size', dateSize)
         .style('text-anchor', 'middle')
         .style('fill', dateColor)
+        .style('opacity', opacity)
         .text(item['date']);
     firstEventElts['date'] = date;
+    items.push(date);
 
     // show the image, if there is one
     if ('image' in item && item['image'] !== '') {
@@ -247,8 +269,10 @@ function displayItem(svg, item, x, y) {
             .attr('x', xCenter - (imageSize / 2))
             .attr('y', y_sz - imageSize)
             .attr('width', imageSize)
-            .attr('height', imageSize);
+            .attr('height', imageSize)
+            .style('opacity', opacity)
         firstEventElts['image'] = image;
+        items.push(image);
     }
 
     // show the description
@@ -263,9 +287,12 @@ function displayItem(svg, item, x, y) {
         .style('font-size', textSize)
         .style('text-anchor', 'middle')
         .style('fill', textColor)
+        .style('opacity', opacity)
         .text(item['text'])
         .call(wrap, timelineWidth);
     firstEventElts['text'] = description;
+    items.push(description);
+    items.push(description.selectAll('tspan'));
 
     // show a point at the bottom
     y_sz += 2 * padding + circleSize;
@@ -273,8 +300,12 @@ function displayItem(svg, item, x, y) {
         .attr('cx', xCenter)
         .attr('cy', y_sz)
         .attr('r', circleSize / 2)
-        .attr('fill', timelineColor);
+        .attr('fill', timelineColor)
+        .style('opacity', opacity);
     firstEventElts['point'] = point;
+    items.push(point);
+
+    return items;
 }
 
 function eventHeight(item) {
