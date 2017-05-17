@@ -2,29 +2,6 @@ function px(x) {
     return x + 'px';
 }
 
-function animatePoint(point, x, y, radius, growth, delay) {
-
-    point.transition()
-        .delay(delay)
-        .on('end', runAnimation);
-
-    function runAnimation() {
-        point.transition()
-            .duration(1000)
-            .attr('r', radius + growth)
-            .attr('cx', x - (growth / 2))
-            .attr('cy', y - (growth / 2))
-            .ease(d3.easeLinear)
-            .transition()
-            .duration(1000)
-            .attr('r', radius)
-            .attr('cx', x)
-            .attr('cy', y)
-            .ease(d3.easeLinear)
-            .on('end', runAnimation);
-    }
-}
-
 var line = d3.line()
     .x(function(d) { return d[0]; })
     .y(function(d) { return d[1]; });
