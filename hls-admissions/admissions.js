@@ -21,7 +21,7 @@ function render() {
     var graphX = padding;
     var graphY = padding;
     var graphWidth = fullWidth - 2 * padding;
-    var graphHeight = 500; 
+    var graphHeight = 350; 
     makeGraph(svg, graphX, graphY, graphWidth, graphHeight);
 }
 
@@ -197,13 +197,13 @@ function makeGraph(svg, x, y, width, height) {
         svg.append('text')
             .attr('x', xLoc - bubbleSize / 2 - 10)
             .attr('y', yStart + 35)
-            .attr('width', xLoc - bubbleSize - 20)
+            .attr('width', 150)
             .style('text-anchor', 'end')
             .style('font-family', mainFont)
             .style('font-size', textSize)
             .style('fill', textColor)
             .text(e['name'])
-            .call(wrap, xLoc - bubbleSize - 20);
+            .call(wrap, 150);
     }
 
     function drawDashedLine(i, bubblesDown) {
@@ -223,12 +223,14 @@ function makeGraph(svg, x, y, width, height) {
     // draw dashed lines: these are hardcoded
     drawDashedLine(4, 1);
     drawDashedLine(5, 3);
-    drawDashedLine(9, 5);
+    drawDashedLine(9, 2);
 
     // loop through additional sections and draw
-    for (var i = 0; i < events.length; i++) {
-        drawAdditionalSection(events[i], i);
-    }
+    drawAdditionalSection(events[0], 0);
+    drawAdditionalSection(events[1], 1);
+    drawAdditionalSection(events[2], 2);
+    drawAdditionalSection(events[3], 0);
+    drawAdditionalSection(events[4], 1);
 }
 
 function drawPoint(svg, x, y) {

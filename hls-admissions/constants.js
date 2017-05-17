@@ -1,5 +1,5 @@
 var fullWidth = 600;
-var fullHeight = 950;
+var fullHeight = 650;
 var padding = 10;
 
 var tickLength = 10;
