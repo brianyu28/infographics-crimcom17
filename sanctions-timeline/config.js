@@ -7,7 +7,7 @@ var data = [
             "date": "May 6, 2016",
             "text": "Harvard announces policy to bar members of single gender social organizations from club leadership positions, varsity captaincies, and endorsements for some fellowships.",
             "nameLines": 2,
-            "textLines": 5,
+            "textLines": 4,
             "image": "img/khurana.png",
             "distance": 2
         },
@@ -27,17 +27,26 @@ var data = [
             "nameLines": 3,
             "textLines": 4,
             "image": "img/khurana.png",
-            "distance": 12
+            "distance": 13
         },
         {
-            "name": "Khurana Says Sanctions Could Be 'Revised or Replaced'",
-            "date": "January 26, 2017",
-            "text": "In an email to Harvard students, Khurana announces the formation of a second committee to reevaluate how to confront the \"problematic impact\" of single-gender social organizations.",
+            "name": "Committee Recommends Honor Council Help Enforce Penalties",
+            "date": "March 6, 2016",
+            "text": "In an email to the student body, Khurana announces that he is accepting nearly all of the committee's recommendations, including a proposal to have the Honor Council help enforce the College's penalties.",
             "nameLines": 3,
-            "textLines": 5,
+            "textLines": 7,
             "image": "img/khurana.png",
-            "distance": 15
+            "distance": 76
         },
+        {
+            "name": "Plan Goes into Effect for Class of 2021",
+            "date": "Fall 2017",
+            "text": "The College's policy is slated to go into effect beginning with members of the Class of 2021.",
+            "nameLines": 3,
+            "textLines": 3,
+            "image": "img/khurana.png",
+            "distance": 45
+        }
     ],
 
     // second datedata
@@ -70,13 +79,22 @@ var data = [
             "distance": 50
         },
         {
+            "name": "Khurana Says Sanctions Could Be 'Revised or Replaced'",
+            "date": "January 26, 2017",
+            "text": "In an email to Harvard students, Khurana announces the formation of a second committee to reevaluate how to confront the \"problematic impact\" of single-gender social organizations.",
+            "nameLines": 3,
+            "textLines": 5,
+            "image": "img/khurana.png",
+            "distance": 15
+        },
+        {
             "name": "Lewis Withdraws Faculty Motion",
             "date": "January 30, 2017",
             "text": "Lewis withdraws the motion opposing the College's sanctions in response to Khurana's announcement that the sanctions could be \"revised or replaced\" by a faculty committee.",
             "nameLines": 2,
             "textLines": 5,
             "image": "img/lewis.png",
-            "distance": 24 
+            "distance": 2 
         },
         {
             "name": "Committee to Release Recommendations in 'Coming Weeks'",
@@ -85,7 +103,7 @@ var data = [
             "nameLines": 3,
             "textLines": 5,
             "image": "img/uhall.png",
-            "distance": 20
+            "distance": 60
         }
     ]
 ];

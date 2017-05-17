@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="https://fonts.googleapis.com/css?family=Merriweather" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+        <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <script src="config.js"></script>
+        <script src="constants.js"></script>
+        <script src="helpers.js"></script>
+        <script src="corporation.js"></script>
+        <style>
+            .btn-group button {
+                background-color: #b0cfe7; /* Green background */
+                border: 1px solid black; /* Green border */
+                color: black; /* White text */
+                padding: 10px 24px; /* Some padding */
+                cursor: pointer; /* Pointer/hand icon */
+                float: left; /* Float the buttons side by side */
+            }
+
+            .btn-group button:not(:last-child) {
+                border-right: none; /* Prevent double borders */
+            }
+
+            /* Clear floats (clearfix hack) */
+            .btn-group:after {
+                content: "";
+                clear: both;
+                display: table;
+            }
+
+            .btn-group {
+                padding-top: 5px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            /* Add a background color on hover */
+            .btn-group button:hover {
+                background-color: #7799b7;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="corporation-infographic">
+            <div class="btn-group">
+                <button id="rearrange-profession">Profession</button>
+                <button id="rearrange-alumni">Harvard Alumni</button>
+                <button id="rearrange-appointed">When Took Office</button>
+                <button id="rearrange-experience">Higher Ed Board Experience?</button>
+            </div>
+        </div>
+        &copy; The Harvard Crimson, 2017
+    </body>
+</html>
