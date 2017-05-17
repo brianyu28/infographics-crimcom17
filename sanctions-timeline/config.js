@@ -3,10 +3,10 @@ var data = [
     // first datedata
     [
         {
-            "name": "Event 1",
-            "date": "Time 1",
+            "name": "Administartion Announces Social Group Sanctions",
+            "date": "May 6, 2016",
             "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Here is some more text.",
-            "nameLines": 1,
+            "nameLines": 2,
             "textLines": 3,
             "image": "img/khurana.png",
             "distance": 2
@@ -52,5 +52,6 @@ var data = [
             "distance": 8
         }
     ]
-]
+];
 
+var timelineTitles = ["The Plan", "The Complications"];

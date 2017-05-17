@@ -4,7 +4,7 @@ window.onload = function() {
 
 var originX = 0;
 var originY = padding;
-var yStartAdditional = 20; // additional padding after button clicked
+var yStartAdditional = 50; // additional padding after button clicked
 
 var firstEvent;
 var firstEventHeight;
@@ -81,16 +81,33 @@ function showFull(svg) {
         removeUponFull[i].remove();
     }
     removeUponFull = [];
-
+    
+    // compute where each timeline should begin, in terms of X
     var t1Start = timelineMargins; 
     var t2Start = timelineMargins + timelinePadding + timelineWidth;
     var starts = [t1Start, t2Start];
-
-    moveFirstElement(firstEvent, t1Start, originY + yStartAdditional);
     
+    // move first element
+    moveFirstElement(firstEvent, t1Start, originY + yStartAdditional);
+
     // show all of the remaining elements
     for (var i = 0; i < data.length; i++) {
+
         var curHeight = originY + yStartAdditional;
+
+        // show this column's title 
+        svg.append('text')
+            .attr('x', starts[i] + (timelineWidth / 2))
+            .attr('y', curHeight - padding)
+            .attr('width', timelineWidth)
+            .attr('height', curHeight - padding)
+            .style('font-family', mainFont)
+            .style('font-size', nameSize)
+            .style('text-anchor', 'middle')
+            .style('fill', nameColor)
+            .text(timelineTitles[i]);
+
+        // show the events
         for (var j = 0; j < data[i].length; j++) {
             if (data[i][j] !== firstEvent)
                 displayItem(svg, data[i][j], starts[i], curHeight);
@@ -124,7 +141,14 @@ function moveFirstElement(item, t1Start, yStart) {
         .duration(1000)
         .ease(d3.easeLinear)
         .attr('x', xCenter)
-        .attr('y', y_sz);
+        .attr('y', y_sz - (nameLines - 1) * nameHeight);
+
+    childNames = firstEventElts['name'].selectAll('tspan');
+    childNames.transition()
+        .duration(1000)
+        .ease(d3.easeLinear)
+        .attr('x', xCenter)
+        .attr('y', y_sz - (nameLines - 1) * nameHeight);
 
     y_sz += padding + dateHeight;
     firstEventElts['date'].transition()
@@ -190,14 +214,15 @@ function displayItem(svg, item, x, y) {
     y_sz += padding + nameLines * nameHeight;
     var name = svg.append('text')
         .attr('x', xCenter)
-        .attr('y', y_sz)
+        .attr('y', y_sz - (nameLines - 1) * nameHeight)
         .attr('width', timelineWidth)
         .attr('height', nameLines * nameHeight)
         .style('font-family', nameFont)
         .style('font-size', nameSize)
         .style('text-anchor', 'middle')
         .style('fill', nameColor)
-        .text(item['name']);
+        .text(item['name'])
+        .call(wrap, timelineWidth);
     firstEventElts['name'] = name;
 
     // show the event date

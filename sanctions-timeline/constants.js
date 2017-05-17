@@ -13,7 +13,7 @@ var buttonWidth = 200;
 var buttonHeight = 50;
 
 // timeline event items
-var nameHeight = 15;
+var nameHeight = 20;
 var dateHeight = 13;
 var textHeight = 11;
 var imageSize = 80;
