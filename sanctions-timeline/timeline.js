@@ -13,6 +13,7 @@ var firstEventElts = {};
 var neededEventHeight; // for all events
 
 var removeUponFull = [];
+var startOpacity = 0;
 
 function render() {
     var canvas = d3.select('#double-timeline')
@@ -22,15 +23,30 @@ function render() {
     // compute first event and it's height
     firstEvent = data[0][0];
     firstEventHeight = eventHeight(firstEvent);
+    
+    // height we will eventually require
+    neededEventHeight = originY + yStartAdditional + totalEventHeight(data) + bottomPadding;
+
+    // if no intro screen, then immediately need the full height
+    var initialHeight = padding + firstEventHeight + continueAreaHeight;
+    if (!showIntroScreen)
+        initialHeight = neededEventHeight;
 
     var svg = canvas.append('svg')
         .style('width', px(graphicWidth))
-        .style('height', px(padding + firstEventHeight + continueAreaHeight))
+        .style('height', px(initialHeight))
         .style('margin-left', px(padding))
         .style('margin-right', px(padding));
     
-    neededEventHeight = originY + yStartAdditional + totalEventHeight(data) + bottomPadding;
-    showIntro(svg);
+
+    if (showIntroScreen) {
+        startOpacity = 0;
+        showIntro(svg);
+    } else {
+        firstEvent = null;
+        startOpacity = 1;
+        showFull(svg);
+    }
 }
 
 function addHeadline(canvas) {
@@ -88,7 +104,8 @@ function showFull(svg) {
     var starts = [t1Start, t2Start];
     
     // move first element
-    moveFirstElement(firstEvent, t1Start, originY + yStartAdditional);
+    if (firstEvent !== null)
+        moveFirstElement(firstEvent, t1Start, originY + yStartAdditional);
 
     // show all of the remaining elements
     for (var i = 0; i < data.length; i++) {
@@ -105,7 +122,7 @@ function showFull(svg) {
             .style('font-size', nameSize)
             .style('text-anchor', 'middle')
             .style('fill', nameColor)
-            .style('opacity', 0)
+            .style('opacity', startOpacity)
             .text(timelineTitles[i]);
         colTitle.transition()
             .duration(1500)
@@ -115,7 +132,7 @@ function showFull(svg) {
         // show the events
         for (var j = 0; j < data[i].length; j++) {
             if (data[i][j] !== firstEvent) {
-                var items = displayItem(svg, data[i][j], starts[i], curHeight, 0); 
+                var items = displayItem(svg, data[i][j], starts[i], curHeight, startOpacity); 
                 
                 // fade in the elements over 1.5 seconds
                 for (var k = 0; k < items.length; k++) {
@@ -129,11 +146,13 @@ function showFull(svg) {
         }
     }
 
-    // expand size to fill
-    svg.transition()
-        .duration(2000)
-        .style('height', neededEventHeight)
-        .ease(d3.easeLinear);
+    // expand size to fill if necessary
+    if (showIntroScreen) {
+        svg.transition()
+            .duration(2000)
+            .style('height', neededEventHeight)
+            .ease(d3.easeLinear);
+    }
 }
 
 function moveFirstElement(item, t1Start, yStart) {
@@ -232,7 +251,7 @@ function displayItem(svg, item, x, y, opacity) {
     var name = svg.append('text')
         .attr('x', xCenter)
         .attr('y', y_sz - (nameLines - 1) * nameHeight)
-        .attr('width', timelineWidth)
+        .attr('width', 0.9 * timelineWidth)
         .attr('height', nameLines * nameHeight)
         .style('font-family', nameFont)
         .style('font-size', nameSize)
@@ -240,7 +259,7 @@ function displayItem(svg, item, x, y, opacity) {
         .style('fill', nameColor)
         .style('opacity', opacity)
         .text(item['name'])
-        .call(wrap, timelineWidth);
+        .call(wrap, 0.9 * timelineWidth);
     firstEventElts['name'] = name;
     items.push(name);
     items.push(name.selectAll('tspan'));
