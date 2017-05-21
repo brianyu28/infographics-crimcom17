@@ -300,7 +300,7 @@ function displayItem(svg, item, x, y, opacity) {
     var description = svg.append('text')
         .attr('x', xCenter)
         .attr('y', y_sz - (textLines - 1) * textHeight)
-        .attr('width', timelineWidth)
+        .attr('width', timelineWidth * 0.9)
         .attr('height', textLines * textHeight)
         .style('font-family', textFont)
         .style('font-size', textSize)
@@ -308,7 +308,7 @@ function displayItem(svg, item, x, y, opacity) {
         .style('fill', textColor)
         .style('opacity', opacity)
         .text(item['text'])
-        .call(wrap, timelineWidth);
+        .call(wrap, timelineWidth * 0.9);
     firstEventElts['text'] = description;
     items.push(description);
     items.push(description.selectAll('tspan'));

@@ -1,63 +1,63 @@
 var data = [
     {
         "year": 1972,
-        "title": "Proposal #1",
-        "description": "Description of Proposal #1 here. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec fringilla ligula id sem bibendum, vel elementum urna pellentesque. In eu risus vitae nunc tincidunt lacinia ac id felis."
+        "title": "Jack Womack",
+        "description": "Jack Womack submits list of courses that could constitute an undergraduate program in ethnic studies."
     },
     {
         "year": 1972,
-        "title": "Proposal #2",
-        "description": "Description of Proposal #2 here. Vivamus id lacus magna. Pellentesque dapibus ex at volutpat pretium. Sed pretium nec dui vitae semper. Quisque vulputate ut metus vel pretium."
+        "title": "Raza Proposal",
+        "description": "Harvard-Racliffe Raza Proposal submitted for \"Chicago and Puerto Rican Studies.\""
     },
     {
         "year": 1991,
-        "title": "Proposal #3",
-        "description": "Description of Proposal #3 here. Maecenas eros risus, efficitur eu libero at, auctor lobortis quam. Sed vel congue lacus. Morbi ut elit sit amet purus volutpat pretium. Nulla ut nibh sapien. Sed fringilla ligula non felis dictum suscipit."
+        "title": "Academic Affairs Proposal",
+        "description": "Harvard Foundation's Academic Affairs Committee Submits proposal called or an ethnic studies concentration."
     },
     {
         "year": 1993,
-        "title": "Proposal #4",
-        "description": "Description of Proposal #4 here. Suspendisse potenti. Donec faucibus viverra congue. Aliquam vel felis convallis, malesuada lorem efficitur, varius nulla. Fusce nec orci risus."
+        "title": "Education Policy Report",
+        "description": "Educational Policy Committee's produced a proposal that \"survey[ed] FAS curricular offerings and structures in Ethnic studies.\""
     },
     {
         "year": 1995,
-        "title": "Proposal #5",
-        "description": "Description of Proposal #5 here. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Phasellus maximus euismod vestibulum."
+        "title": "Academic Affairs Report",
+        "description": "The Academic Affairs Committee from Harvard Foundation Submits report called \"Moving Beyond Transcendent Universalisms; Ethnic Studies and a New Era of Pedagogy\""
     },
     {
         "year": 1996,
-        "title": "Proposal #6",
-        "description": "Description of Proposal #6 here. Proin pellentesque auctor quam, tempus sagittis risus condimentum ac. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas."
+        "title": "Ad Hoc Committee's Paper",
+        "description": "Ad Hoc committee submits paper calling for the FAS Dean's Committee on Ethnic Studies to coordinate resources, funds, and hiring for ethnic studies."
     },
     {
         "year": 2000,
-        "title": "Proposal #7",
-        "description": "Description of Proposal #7 here. Mauris finibus fermentum enim. Fusce scelerisque vestibulum tincidunt. Pellentesque in quam mattis, dignissim neque vitae, scelerisque ex."
+        "title": "Ethnic Studies Proposal",
+        "description": "Committee on Ethnic Studies proposes conferences on \"New American studies.\""
     },
     {
         "year": 2001,
-        "title": "Proposal #8",
-        "description": "Description of Proposal #8 here. Suspendisse tincidunt nisi sem, sit amet accumsan est porttitor non. Donec sodales, nunc vitae dignissim porttitor, ante elit efficitur felis, fringilla imperdiet ante nibh vel enim. Aliquam erat volutpat."
+        "title": "Faculty Petition",
+        "description": "12 Latinx Faculty Petition for Latino/a Center. Committee on Ethnic Studies begins intensive process to explore creating a certificate program for Ethnic Studies."
     },
     {
         "year": 2002,
-        "title": "Proposal #9",
-        "description": "Description of Proposal #9 here. Phasellus semper, elit vitae auctor ullamcorper, lacus ipsum eleifend eros, eget volutpat nunc enim sit amet velit. Nam ut elit porta, malesuada arcu non, blandit metus. In cursus mauris nec egestas ornare. Maecenas ut molestie massa."
+        "title": "Certificate Proposal",
+        "description": "Committee on Latin American and Iberian Studies takes on a proposal for a separate certificate for Latin American Studies to be administered during a 3-year trial period."
     },
     {
         "year": 2006,
-        "title": "Proposal #10",
-        "description": "Description of Proposal #10 here. Integer et arcu eget dolor tempor varius. Curabitur accumsan felis eu ipsum vestibulum, at volutpat dolor posuere. Nam viverra risus a dignissim consectetur. Ut pharetra iaculis mollis. Praesent ut blandit dui."
+        "title": "Native Studies Secondary",
+        "description": "Educational policy committee submits proposal for Native Studies secondary."
     },
     {
         "year": 2008,
-        "title": "Proposal #11",
-        "description": "Description of Proposal #11 here. Donec vitae erat magna. Morbi consectetur nunc sit amet massa efficitur, scelerisque bibendum lacus fringilla. Donec maximus mi et lectus finibus ultrices."
+        "title": "Coalition Paper",
+        "description": "Ethnic studies student coalition submits policy paper in an effort to push the University to revive the Committee for Ethnic Studies."
     },
     {
         "year": 2016,
-        "title": "Proposal #12",
-        "description": "Description of Proposal #12 here. Donec nec metus pretium, faucibus elit sit amet, feugiat leo. Nam facilisis mi in erat venenatis, at posuere libero ullamcorper. Fusce tempor auctor ipsum ac efficitur. Morbi lacus sapien, pharetra id scelerisque sit amet, mattis non augue. Mauris at congue sem."
+        "title": "Coalition Petition",
+        "description": "Ethnic studies coalition submits petition  that calls for the establishment of an ethnic studies department, a research center, and more faculty retention. The petition includes language that asks Harvard to offer degrees in Native American and Indigenous Studies, LatinX Studies, Asian American Studies, Arab and Muslim American Studies, and Comparative Ethnic Studies."
     }
 ];
 var timelineIntervals = [[1970, 2000], [2000, 2020]]

@@ -269,6 +269,6 @@ function showDetail(svg, i) {
         .attr('font-size', descriptionFontSize)
         .attr('fill', timelineColor)
         .text(data[i]['description'])
-        .call(wrap, descriptionWidth);
+        .call(wrap, 0.9 * descriptionWidth);
     detailElements.push(description);
 }

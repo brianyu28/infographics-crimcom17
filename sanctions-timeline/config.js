@@ -7,15 +7,15 @@ var data = [
             "date": "May 6, 2016",
             "text": "Harvard announces policy to bar members of single gender social organizations from club leadership positions, varsity captaincies, and endorsements for some fellowships.",
             "nameLines": 2,
-            "textLines": 4,
+            "textLines": 5,
             "image": "img/khurana.png",
             "distance": 2
         },
         {
             "name": "Khurana Announces Implementation Committee",
             "date": "September 21, 2016",
-            "text": "Khurana assembles a committee of students, staff, and faculty charged with crafting recommendations about how to implement and enforce the policy.",
-            "nameLines": 3,
+            "text": "Khurana assembles a committee of students, staff, and faculty to craft recommendations about how to implement and enforce the policy.",
+            "nameLines": 2,
             "textLines": 5,
             "image": "img/khurana.png",
             "distance": 60 
@@ -24,7 +24,7 @@ var data = [
             "name": "Members Appointed to Implementation Committee",
             "date": "November 1, 2016",
             "text": "Twelve Harvard undergraduates are appointed to the 37-member committee, which also consists of faculty and administrators.",
-            "nameLines": 3,
+            "nameLines": 2,
             "textLines": 4,
             "image": "img/khurana.png",
             "distance": 13
@@ -32,7 +32,7 @@ var data = [
         {
             "name": "Committee Recommends Honor Council Help Enforce Penalties",
             "date": "March 6, 2016",
-            "text": "In an email to the student body, Khurana announces that he is accepting nearly all of the committee's recommendations, including a proposal to have the Honor Council help enforce the College's penalties.",
+            "text": "Khurana announces that he is accepting nearly all of the committee's recommendations,including a proposal to have the Honor Council help enforce the College's penalties.",
             "nameLines": 3,
             "textLines": 7,
             "image": "img/khurana.png",
@@ -42,7 +42,7 @@ var data = [
             "name": "Plan Goes into Effect for Class of 2021",
             "date": "Fall 2017",
             "text": "The College's policy is slated to go into effect beginning with members of the Class of 2021.",
-            "nameLines": 3,
+            "nameLines": 2,
             "textLines": 3,
             "image": "img/khurana.png",
             "distance": 45
@@ -54,14 +54,14 @@ var data = [
         {
             "name": "Lewis Criticizes Social Club Policy",
             "date": "May 11, 2016",
-            "text": "In a letter to Khurana, former Dean of the College Harry R. Lewis '68 criticizes the sanctions and expresses doubt about their effectiveness.",
+            "text": "In a letter to Khurana, former Dean of the College Harry R. Lewis '68 criticizes the sanctions, arguing that they could create a 'culture of fear and anxiety about noncomformity.'",
             "nameLines": 2,
-            "textLines": 4,
+            "textLines": 5,
             "image": "img/lewis.png",
             "distance": 20 
         },
         {
-            "name": "Faculty Draft Motion Against Sanctions",
+            "name": "Some Faculty Draft Motion Against Sanctions",
             "date": "May 23, 2016",
             "text": "Twelve professors submit a motion resolving that \"Harvard College shall not discriminate against students on the basis of organizations they join.\"",
             "nameLines": 2,
@@ -70,9 +70,9 @@ var data = [
             "distance": 8
         },
         {
-            "name": "Faculty Debate Social Club Motion at Faculty Meeting",
-            "date": "November 1, 2016",
-            "text": "At their monthly meeting, members of the Faculty of Arts and Sciences debate the social groups policy, but do not vote on the motion.",
+            "name": "Faculty Debate Social Club Motion at Faculty Meetings",
+            "date": "Fall 2016",
+            "text": "At successive faculty meetings in November and December, professors debated, but did not vote on, Lewis's motion.",
             "nameLines": 3,
             "textLines": 4,
             "image": "img/uhall.png",
@@ -82,7 +82,7 @@ var data = [
             "name": "Khurana Says Sanctions Could Be 'Revised or Replaced'",
             "date": "January 26, 2017",
             "text": "In an email to Harvard students, Khurana announces the formation of a second committee to reevaluate how to confront the \"problematic impact\" of single-gender social organizations.",
-            "nameLines": 3,
+            "nameLines": 2,
             "textLines": 5,
             "image": "img/khurana.png",
             "distance": 15
@@ -99,7 +99,7 @@ var data = [
         {
             "name": "Committee to Release Recommendations in 'Coming Weeks'",
             "date": "May 15, 2017",
-            "text": "In a letter to faculty, FAS Dean Michael D. Smith, the faculty committee will share preliminary recommendations in the coming weeks.",
+            "text": "In a letter to faculty, FAS Dean Michael D. Smith wrote that the faculty committee will share preliminary recommendations in the coming weeks.",
             "nameLines": 3,
             "textLines": 5,
             "image": "img/uhall.png",
@@ -110,4 +110,4 @@ var data = [
 
 var timelineTitles = ["The Plan", "The Complications"];
 
-var showIntroScreen = true;
+var showIntroScreen = false;
