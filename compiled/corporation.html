@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="https://fonts.googleapis.com/css?family=Merriweather" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+        <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <style>
+            .btn-group button {
+                background-color: #b0cfe7; /* Green background */
+                border: 1px solid black; /* Green border */
+                color: black; /* White text */
+                padding: 10px 24px; /* Some padding */
+                cursor: pointer; /* Pointer/hand icon */
+                float: left; /* Float the buttons side by side */
+            }
+            /*
+            .btn-group button:not(:last-child) {
+                border-right: none; /* Prevent double borders */
+            }
+            */
+
+            /* Clear floats (clearfix hack) */
+            .btn-group:after {
+                content: "";
+                clear: both;
+                display: table;
+            }
+
+            .btn-group {
+                padding-top: 5px;
+            }
+
+            /* Add a background color on hover */
+            .btn-group button:hover {
+                background-color: #7799b7;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="corporation-infographic">
+            <div class="btn-group">
+                <button id="rearrange-profession">Profession</button>
+                <button id="rearrange-alumni">Harvard Alumni</button>
+                <button id="rearrange-appointed">When Took Office</button>
+                <button id="rearrange-experience">Higher Ed Board Experience?</button>
+            </div>
+        </div>
+        &copy; The Harvard Crimson, 2017
+    </body>
+<script>
+
+var data = [
+    {
+        "name": "David Rubenstein",
+        "image": "http://media.thecrimson.com/widgets/corporation/img/rubenstein.png",
+        "locations": {
+            "initial": [300, 75],
+            "profession": [200, 125],
+            "alumni": [30, 390],
+            "appointed": [460, 450],
+            "experience": [465, 110]
+        }
+    },
+    {
+        "name": "William F. Lee",
+        "image": "http://media.thecrimson.com/widgets/corporation/img/lee.png",
+        "locations": {
+            "initial": [75, 200],
+            "profession": [30, 460],
+            "alumni": [450, 40],
+            "appointed": [230, 60],
+            "experience": [30, 80]
+        }
+    },
+    {
+        "name": "Lawrence S. Bacow",
+        "image": "http://media.thecrimson.com/widgets/corporation/img/bacow.png",
+        "locations": {
+            "initial": [225, 200],
+            "profession": [300, 250],
+            "alumni": [440, 290],
+            "appointed": [415, 115],
+            "experience": [470, 200]
+        }
+    },
+    {
+        "name": "James W. Breyer",
+        "image": "http://media.thecrimson.com/widgets/corporation/img/breyer.png",
+        "locations": {
+            "initial": [375, 200],
+            "profession": [40, 60],
+            "alumni": [250, 350],
+            "appointed": [235, 230],
+            "experience": [115, 300]
+        }
+    },
+    {
+        "name": "Kenneth I. Chenault",
+        "image": "http://media.thecrimson.com/widgets/corporation/img/chenault.png",
+        "locations": {
+            "initial": [525, 200],
+            "profession": [130, 70],
+            "alumni": [340, 300],
+            "appointed": [130, 440],
+            "experience": [150, 410]
+        }
+    },
+    {
+        "name": "Jessica Tuchman Mathews",
+        "image": "http://media.thecrimson.com/widgets/corporation/img/mathews.png",
+        "locations": {
+            "initial": [225, 325],
+            "profession": [350, 60],
+            "alumni": [370, 70],
+            "appointed": [325, 260],
+            "experience": [200, 340]
+        }
+    },
+    {
+        "name": "Paul J. Finnegan",
+        "image": "http://media.thecrimson.com/widgets/corporation/img/finnegan.png",
+        "locations": {
+            "initial": [75, 325],
+            "profession": [20, 145],
+            "alumni": [210, 210],
+            "appointed": [50, 210],
+            "experience": [80, 155]
+        }
+    },
+    {
+        "name": "Karen Gordon Mills",
+        "image": "http://media.thecrimson.com/widgets/corporation/img/mills.png",
+        "locations": {
+            "initial": [375, 325],
+            "profession": [430, 100],
+            "alumni": [120, 220],
+            "appointed": [30, 450],
+            "experience": [210, 50]
+        }
+    },
+    {
+        "name": "Joseph J. O'Donnell",
+        "image": "http://media.thecrimson.com/widgets/corporation/img/odonnell.png",
+        "locations": {
+            "initial": [525, 325],
+            "profession": [110, 155],
+            "alumni": [30, 210],
+            "appointed": [490, 70],
+            "experience": [170, 150]
+        }
+    },
+    {
+        "name": "Susan L. Graham",
+        "image": "http://media.thecrimson.com/widgets/corporation/img/graham.png",
+        "locations": {
+            "initial": [75, 450],
+            "profession": [370, 320],
+            "alumni": [290, 40],
+            "appointed": [410, 30],
+            "experience": [120, 75]
+        }
+    },
+    {
+        "name": "Nannerl O. Keohane",
+        "image": "http://media.thecrimson.com/widgets/corporation/img/keohane.png",
+        "locations": {
+            "initial": [225, 450],
+            "profession": [470, 310],
+            "alumni": [115, 415],
+            "appointed": [50, 60],
+            "experience": [380, 210]
+        }
+    },
+    {
+        "name": "Shirley M. Tilghman",
+        "image": "http://media.thecrimson.com/widgets/corporation/img/tilghman.png",
+        "locations": {
+            "initial": [375, 450],
+            "profession": [285, 335],
+            "alumni": [100, 500],
+            "appointed": [300, 450],
+            "experience": [370, 120]
+        }
+    },
+    {
+        "name": "Theodore V. Wells, Jr.",
+        "image": "http://media.thecrimson.com/widgets/corporation/img/wells.png",
+        "locations": {
+            "initial": [525, 450],
+            "profession": [120, 450],
+            "alumni": [320, 410],
+            "appointed": [255, 313],
+            "experience": [65, 385]
+        }
+    }
+];
+
+var labels = {
+    "profession": [
+        ["Legal", [100, 450]],
+        ["Higher Ed", [400, 300]],
+        ["Business", [100, 50]],
+        ["Government", [440, 80]]
+    ],
+    "alumni": [
+        ["College", [390, 60]],
+        ["Professional/Graduate School", [350, 400]],
+        ["College and Professional/Graduate School", [10, 200]],
+        ["Not Alumni", [20, 500]]
+    ],
+    "appointed": [
+        ["2005", [70, 50]],
+        ["2010", [250, 50]],
+        ["2011", [500, 50]],
+        ["2012", [70, 200]],
+        ["2013", [325, 250]],
+        ["2014", [90, 440]],
+        ["2016", [320, 440]],
+        ["2017", [480, 440]]
+    ],
+    "experience": [
+        ["No", [150, 400]],
+        ["Yes", [450, 200]],
+        ["Yes, former Overseer", [50, 70]]
+    ]
+}
+var graphicWidth = 600;
+var graphicHeight = 600;
+var padding = 10;
+
+// timeline event items
+var imageSize = 80;
+var nameBoxWidth = 170;
+var nameBoxHeight = 25;
+
+var nameSize = 14;
+var labelSize = 16;
+
+var crimson = '#a82931';
+var blue1 = '#004e6a';
+var blue2 = '#7799b7';
+var blue3 = '#b0cfe7';
+var green = '#298848';
+var yellow = '#dbd300';
+var white = '#ffffff';
+var black = '#000000';
+var grey = '#444444';
+
+var textColor = black;
+var nameColor = black;
+var dateColor = grey;
+var nameBoxColor = blue3;
+
+var merriweather = '"Merriweather", serif';
+var lato = '"Lato", sans-serif';
+
+var mainFont = lato;
+var nameFont = lato;
+var labelFont = lato;
+var headlineFont = merriweather;
+var textFont = merriweather;
+var dateFont = lato;
+
+var imgMethod = 'xlink:href'; // If images local, use 'xlink:href', otherwise use 'href'
+function px(x) {
+    return x + 'px';
+}
+
+var line = d3.line()
+    .x(function(d) { return d[0]; })
+    .y(function(d) { return d[1]; });
+
+
+function disableSelection(text) {
+    text.style('-webkit-touch-callout', 'none')
+        .style('-webkit-user-select', 'none')
+        .style('-khtml-user-select', 'none')
+        .style('-moz-user-select', 'none')
+        .style('-ms-user-select', 'none')
+        .style('-o-user-select', 'none')
+        .style('user-select', 'none')
+}
+
+// adapted text wrap function
+function wrap(text, width) {
+    text.each(function () {
+        var text = d3.select(this),
+            words = text.text().split(/\s+/).reverse(),
+            word,
+            line = [],
+            lineNumber = 0,
+            lineHeight = 1.1, // ems
+            x = text.attr("x"),
+            y = text.attr("y"),
+            dy = 0, //parseFloat(text.attr("dy")),
+            tspan = text.text(null)
+                        .append("tspan")
+                        .attr("x", x)
+                        .attr("y", y)
+                        .attr("dy", dy + "em");
+        while (word = words.pop()) {
+            line.push(word);
+            tspan.text(line.join(" "));
+            if (tspan.node().getComputedTextLength() > width) {
+                line.pop();
+                tspan.text(line.join(" "));
+                line = [word];
+                tspan = text.append("tspan")
+                            .attr("x", x)
+                            .attr("y", y)
+                            .attr("dy", ++lineNumber * lineHeight + dy + "em")
+                            .text(word);
+            }
+        }
+    });
+}
+window.onload = function() {
+    render();
+    
+    // change all other buttons back to normal, color in this button
+    function colorButton(button) {
+        d3.selectAll('button')
+            .transition()
+            .style('background-color', blue3);
+        button
+            .transition()
+            .style('background-color', blue2);
+    }
+
+    document.getElementById("rearrange-profession").onclick = function(){
+        colorButton(d3.select(this));
+        transitionTo('profession');
+    }
+    document.getElementById("rearrange-alumni").onclick = function(){
+        colorButton(d3.select(this));
+        transitionTo('alumni');
+    }
+    document.getElementById("rearrange-appointed").onclick = function(){
+        colorButton(d3.select(this));
+        transitionTo('appointed');
+    }
+    document.getElementById("rearrange-experience").onclick = function(){
+        colorButton(d3.select(this));
+        transitionTo('experience');
+    }
+};
+
+var points = [];
+
+var svg;
+
+function render() {
+    var canvas = d3.select('#corporation-infographic')
+        .style('width', px(graphicWidth));
+    addHeadline(canvas);
+    
+    svg = canvas.append('svg')
+        .style('width', px(graphicWidth))
+        .style('height', px(graphicHeight))
+        .style('margin-left', px(padding))
+        .style('margin-right', px(padding));
+
+    drawInitialPositions();
+}
+
+function addHeadline(canvas) {
+    var headline = canvas.insert('div', 'div')
+        .style('margin-left', px(padding))
+        .style('margin-right', px(padding))
+        .style('text-align', 'center')
+        .style('font-size', px(28))
+        .style('font-family', headlineFont)
+        .text('The Making of a Corporation Member');
+}
+
+// draws person i centered at location (x, y)
+var visibleNameElts = [];
+function drawImage(i, x, y) {
+    // draw the actual image
+    var img = svg.append('image')
+        .attr(imgMethod, data[i]['image'])
+        .attr('x', x - (imageSize / 2))
+        .attr('y', y - (imageSize / 2))
+        .attr('width', imageSize)
+        .attr('height', imageSize);
+    points.push(img);
+
+    // on hover, display information
+    img.on('mouseover', function() {
+        showName(img, i);
+    })
+    .on('click', function() {
+        showName(img, i);
+    })
+    .on('mouseout', function() {
+        hideVisibleName();
+    });
+
+    // function to show the name
+    function showName(img, i) {
+    
+        // returns the number of pixels wide the name needs to be
+        function requiredNameLength(name) {
+            if (name.length < 17)
+                return 120;
+            else if (name.length < 20)
+                return 140;
+            else if (name.length < 23)
+                return 150;
+            else
+                return 170;
+        }
+    
+        nameBoxWidth = requiredNameLength(data[i]['name']);
+        var rect = svg.append('rect')
+            .attr('x', parseFloat(img.attr('x')) - (nameBoxWidth - imageSize) / 2)
+            .attr('y', parseFloat(img.attr('y')) + imageSize - padding)
+            .attr('width', nameBoxWidth)
+            .attr('height', nameBoxHeight)
+            .style('fill', nameBoxColor);
+        visibleNameElts.push(rect);
+
+        var name = svg.append('text')
+            .attr('x', parseFloat(img.attr('x')) + (imageSize / 2))
+            .attr('y', parseFloat(img.attr('y')) + imageSize + nameBoxHeight - 1.8 * padding)
+            .style('fill', textColor)
+            .style('font-family', nameFont)
+            .style('font-size', nameSize)
+            .style('text-anchor', 'middle')
+            .text(data[i]['name']);
+        visibleNameElts.push(name);
+    }
+}
+
+function hideVisibleName() {
+    for (var i = 0; i < visibleNameElts.length; i++)
+        visibleNameElts[i].remove();
+    visibleNameElts = [];
+}
+
+function drawInitialPositions() {
+    for (var i = 0; i < data.length; i++) {
+        if (data[i]['locations']['initial'].length == 0)
+            continue;
+        drawImage(i, data[i]['locations']['initial'][0], data[i]['locations']['initial'][1]);
+    }
+}
+
+currentLabels = [];
+function transitionTo(page) {
+
+    // erase existing labels
+    for (var i = 0; i < currentLabels.length; i++) {
+        currentLabels[i].remove();
+    }
+    currentLabels = [];
+
+    // show the labels
+    for (var i = 0; i < labels[page].length; i++) {
+
+        if (labels[page][i][1].length == 0)
+            continue;
+
+        var curLabel = svg.append('text')
+            .attr('x', labels[page][i][1][0])
+            .attr('y', labels[page][i][1][1])
+            .style('text-anchor', 'center')
+            .style('font-family', lato)
+            .style('font-size', labelSize) 
+            .text(labels[page][i][0]);
+        currentLabels.push(curLabel);
+    }
+
+    // move all of the bubbles
+    for (var i = 0; i < data.length; i++) {
+
+        // don't move if there's no point
+        if (data[i]['locations'][page].length == 0)
+            continue;
+
+        // move the point
+        points[i].transition()
+            .duration(500)
+            .ease(d3.easeLinear)
+            .attr('x', data[i]['locations'][page][0])
+            .attr('y', data[i]['locations'][page][1]);
+    }
+}
+</script>
+</html>

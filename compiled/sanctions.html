@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="https://fonts.googleapis.com/css?family=Merriweather" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+        <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+    </head>
+    <body>
+        <div id="double-timeline">
+        </div>
+        &copy; The Harvard Crimson, 2017
+    </body>
+<script>
+
+var data = [
+    
+    // first datedata
+    [
+        {
+            "name": "Harvard Announces Social Group Sanctions",
+            "date": "May 6, 2016",
+            "text": "Harvard announces policy to bar members of single gender social organizations from club leadership positions, varsity captaincies, and endorsements for some fellowships.",
+            "nameLines": 2,
+            "textLines": 5,
+            "image": "http://media.thecrimson.com/widgets/sanctions/img/khurana.png",
+            "distance": 2
+        },
+        {
+            "name": "Khurana Announces Implementation Committee",
+            "date": "September 21, 2016",
+            "text": "Khurana assembles a committee of students, staff, and faculty to craft recommendations about how to implement and enforce the policy.",
+            "nameLines": 3,
+            "textLines": 5,
+            "image": "http://media.thecrimson.com/widgets/sanctions/img/khurana.png",
+            "distance": 60 
+        },
+        {
+            "name": "Members Appointed to Implementation Committee",
+            "date": "November 1, 2016",
+            "text": "Twelve Harvard undergraduates are appointed to the 37-member committee, which also consists of faculty and administrators.",
+            "nameLines": 3,
+            "textLines": 4,
+            "image": "http://media.thecrimson.com/widgets/sanctions/img/khurana.png",
+            "distance": 13
+        },
+        {
+            "name": "Committee Recommends Honor Council Help Enforce Penalties",
+            "date": "March 6, 2016",
+            "text": "Khurana announces that he is accepting nearly all of the committee's recommendations,including a proposal to have the Honor Council help enforce the College's penalties.",
+            "nameLines": 3,
+            "textLines": 7,
+            "image": "http://media.thecrimson.com/widgets/sanctions/img/khurana.png",
+            "distance": 76
+        },
+        {
+            "name": "Plan Goes into Effect for Class of 2021",
+            "date": "Fall 2017",
+            "text": "The College's policy is slated to go into effect beginning with members of the Class of 2021.",
+            "nameLines": 2,
+            "textLines": 3,
+            "image": "http://media.thecrimson.com/widgets/sanctions/img/khurana.png",
+            "distance": 45
+        }
+    ],
+
+    // second datedata
+    [
+        {
+            "name": "Lewis Criticizes Social Club Policy",
+            "date": "May 11, 2016",
+            "text": "In a letter to Khurana, former Dean of the College Harry R. Lewis '68 criticizes the sanctions, arguing that they could create a 'culture of fear and anxiety about noncomformity.'",
+            "nameLines": 2,
+            "textLines": 6,
+            "image": "http://media.thecrimson.com/widgets/sanctions/img/lewis.png",
+            "distance": 20 
+        },
+        {
+            "name": "Some Faculty Draft Motion Against Sanctions",
+            "date": "May 23, 2016",
+            "text": "Twelve professors submit a motion resolving that \"Harvard College shall not discriminate against students on the basis of organizations they join.\"",
+            "nameLines": 3,
+            "textLines": 5,
+            "image": "http://media.thecrimson.com/widgets/sanctions/img/uhall.png",
+            "distance": 8
+        },
+        {
+            "name": "Faculty Debate Social Club Motion at Faculty Meetings",
+            "date": "Fall 2016",
+            "text": "At successive faculty meetings in November and December, professors debated, but did not vote on, Lewis's motion.",
+            "nameLines": 3,
+            "textLines": 4,
+            "image": "http://media.thecrimson.com/widgets/sanctions/img/uhall.png",
+            "distance": 50
+        },
+        {
+            "name": "Khurana Says Sanctions Could Be 'Revised or Replaced'",
+            "date": "January 26, 2017",
+            "text": "In an email to Harvard students, Khurana announces the formation of a second committee to reevaluate how to confront the \"problematic impact\" of single-gender social organizations.",
+            "nameLines": 3,
+            "textLines": 7,
+            "image": "http://media.thecrimson.com/widgets/sanctions/img/khurana.png",
+            "distance": 15
+        },
+        {
+            "name": "Lewis Withdraws Faculty Motion",
+            "date": "January 30, 2017",
+            "text": "Lewis withdraws the motion opposing the College's sanctions in response to Khurana's announcement that the sanctions could be \"revised or replaced\" by a faculty committee.",
+            "nameLines": 2,
+            "textLines": 6,
+            "image": "http://media.thecrimson.com/widgets/sanctions/img/lewis.png",
+            "distance": 2 
+        },
+        {
+            "name": "Committee to Release Recommendations in 'Coming Weeks'",
+            "date": "May 15, 2017",
+            "text": "In a letter to faculty, FAS Dean Michael D. Smith wrote that the faculty committee will share preliminary recommendations in the coming weeks.",
+            "nameLines": 3,
+            "textLines": 5,
+            "image": "http://media.thecrimson.com/widgets/sanctions/img/uhall.png",
+            "distance": 60
+        }
+    ]
+];
+
+var timelineTitles = ["The Plan", "The Complications"];
+
+var showIntroScreen = true;
+var graphicWidth = 600;
+var startingHeight = 650;
+var padding = 10;
+var timelineMargins = 20; // space on either side of timeline
+var timelinePadding = 60; // space between timelines
+var bottomPadding = 30;
+var timelineWidth = 250;
+
+var continueAreaHeight = 60;
+
+// button sizes
+var buttonWidth = 200;
+var buttonHeight = 50;
+
+// timeline event items
+var nameHeight = 20;
+var dateHeight = 13;
+var textHeight = 11;
+var imageSize = 80;
+var circleSize = 10;
+
+var tickLength = 10;
+
+var nameSize = 18;
+var dateSize = 15;
+var textSize = 13;
+var buttonFontSize = 18;
+
+var crimson = '#a82931';
+var blue1 = '#004e6a';
+var blue2 = '#7799b7';
+var blue3 = '#b0cfe7';
+var green = '#298848';
+var yellow = '#dbd300';
+var white = '#ffffff';
+var black = '#000000';
+var grey = '#444444';
+
+var timelineColor = black;
+var textColor = black;
+var nameColor = black;
+var dateColor = grey;
+var buttonColor = blue3;
+
+var merriweather = '"Merriweather", serif';
+var lato = '"Lato", sans-serif';
+
+var mainFont = merriweather;
+var nameFont = merriweather;
+var textFont = merriweather;
+var dateFont = lato;
+
+var imgMethod = 'xlink:href'; // If images local, use 'xlink:href', otherwise use 'href'
+function px(x) {
+    return x + 'px';
+}
+
+var line = d3.line()
+    .x(function(d) { return d[0]; })
+    .y(function(d) { return d[1]; });
+
+
+function disableSelection(text) {
+    text.style('-webkit-touch-callout', 'none')
+        .style('-webkit-user-select', 'none')
+        .style('-khtml-user-select', 'none')
+        .style('-moz-user-select', 'none')
+        .style('-ms-user-select', 'none')
+        .style('-o-user-select', 'none')
+        .style('user-select', 'none')
+}
+
+// adapted text wrap function
+function wrap(text, width) {
+    text.each(function () {
+        var text = d3.select(this),
+            words = text.text().split(/\s+/).reverse(),
+            word,
+            line = [],
+            lineNumber = 0,
+            lineHeight = 1.1, // ems
+            x = text.attr("x"),
+            y = text.attr("y"),
+            dy = 0, //parseFloat(text.attr("dy")),
+            tspan = text.text(null)
+                        .append("tspan")
+                        .attr("x", x)
+                        .attr("y", y)
+                        .attr("dy", dy + "em");
+        while (word = words.pop()) {
+            line.push(word);
+            tspan.text(line.join(" "));
+            if (tspan.node().getComputedTextLength() > width) {
+                line.pop();
+                tspan.text(line.join(" "));
+                line = [word];
+                tspan = text.append("tspan")
+                            .attr("x", x)
+                            .attr("y", y)
+                            .attr("dy", ++lineNumber * lineHeight + dy + "em")
+                            .text(word);
+            }
+        }
+    });
+}
+window.onload = function() {
+    render();
+};
+
+var originX = 0;
+var originY = padding;
+var yStartAdditional = 50; // additional padding after button clicked
+
+var firstEvent;
+var firstEventHeight;
+var firstEventElts = {};
+
+var neededEventHeight; // for all events
+
+var removeUponFull = [];
+var startOpacity = 0;
+
+function render() {
+    var canvas = d3.select('#double-timeline')
+        .style('width', px(graphicWidth));
+    addHeadline(canvas);
+    
+    // compute first event and it's height
+    firstEvent = data[0][0];
+    firstEventHeight = eventHeight(firstEvent);
+    
+    // height we will eventually require
+    neededEventHeight = originY + yStartAdditional + totalEventHeight(data) + bottomPadding;
+
+    // if no intro screen, then immediately need the full height
+    var initialHeight = padding + firstEventHeight + continueAreaHeight;
+    if (!showIntroScreen)
+        initialHeight = neededEventHeight;
+
+    var svg = canvas.append('svg')
+        .style('width', px(graphicWidth))
+        .style('height', px(initialHeight))
+        .style('margin-left', px(padding))
+        .style('margin-right', px(padding));
+    
+
+    if (showIntroScreen) {
+        startOpacity = 0;
+        showIntro(svg);
+    } else {
+        firstEvent = null;
+        startOpacity = 1;
+        showFull(svg);
+    }
+}
+
+function addHeadline(canvas) {
+    var headline = canvas.append('div')
+        .style('margin-left', px(padding))
+        .style('margin-right', px(padding))
+        .style('text-align', 'center')
+        .style('font-size', px(28))
+        .style('font-family', mainFont)
+        .text("The Plan, and The Complications");
+}
+
+function showIntro(svg) {
+    
+    // display the first event centered
+    var firstEvent = data[0][0];
+    displayItem(svg, firstEvent, graphicWidth / 2 - timelineWidth / 2, 0, 1);
+
+    // show the button to continue
+    var whatfollowed = svg.append('rect')
+        .attr('x', (graphicWidth / 2) - (buttonWidth / 2))
+        .attr('y', originY + firstEventHeight + padding)
+        .attr('width', buttonWidth)
+        .attr('height', buttonHeight)
+        .style('fill', buttonColor)
+        .on('click', function() { showFull(svg); });
+    removeUponFull.push(whatfollowed); 
+
+    var whatfollowedText = svg.append('text')
+        .attr('x', graphicWidth / 2)
+        .attr('y', originY + firstEventHeight + padding + 0.67 * buttonHeight)
+        .attr('width', buttonWidth)
+        .attr('height', 0.67 * buttonHeight)
+        .style('font-family', mainFont)
+        .style('font-size', buttonFontSize)
+        .style('fill', textColor)
+        .style('text-anchor', 'middle')
+        .text("See what followed...")
+        .on('click', function() { showFull(svg); });
+    removeUponFull.push(whatfollowedText);
+
+}
+
+function showFull(svg) {
+
+    // remove the elements that should disappear upon viewing full
+    for (var i = 0; i < removeUponFull.length; i++) {
+        removeUponFull[i].remove();
+    }
+    removeUponFull = [];
+    
+    // compute where each timeline should begin, in terms of X
+    var t1Start = timelineMargins; 
+    var t2Start = timelineMargins + timelinePadding + timelineWidth;
+    var starts = [t1Start, t2Start];
+    
+    // move first element
+    if (firstEvent !== null)
+        moveFirstElement(firstEvent, t1Start, originY + yStartAdditional);
+
+    // show all of the remaining elements
+    for (var i = 0; i < data.length; i++) {
+
+        var curHeight = originY + yStartAdditional;
+
+        // show this column's title 
+        var colTitle = svg.append('text')
+            .attr('x', starts[i] + (timelineWidth / 2))
+            .attr('y', curHeight - padding)
+            .attr('width', timelineWidth)
+            .attr('height', curHeight - padding)
+            .style('font-family', mainFont)
+            .style('font-size', nameSize)
+            .style('text-anchor', 'middle')
+            .style('fill', nameColor)
+            .style('opacity', startOpacity)
+            .text(timelineTitles[i]);
+        colTitle.transition()
+            .duration(1500)
+            .style('opacity', 1)
+            .ease(d3.easeLinear);
+
+        // show the events
+        for (var j = 0; j < data[i].length; j++) {
+            if (data[i][j] !== firstEvent) {
+                var items = displayItem(svg, data[i][j], starts[i], curHeight, startOpacity); 
+                
+                // fade in the elements over 1.5 seconds
+                for (var k = 0; k < items.length; k++) {
+                    items[k].transition()
+                        .duration(1500)
+                        .style('opacity', 1)
+                        .ease(d3.easeLinear);
+                }
+            }
+            curHeight += eventHeight(data[i][j]);
+        }
+    }
+
+    // expand size to fill if necessary
+    if (showIntroScreen) {
+        svg.transition()
+            .duration(2000)
+            .style('height', neededEventHeight)
+            .ease(d3.easeLinear);
+    }
+}
+
+function moveFirstElement(item, t1Start, yStart) {
+    var xCenter = t1Start + (timelineWidth / 2);
+    
+    var lineLength = tickLength * item['distance'];
+    var y_sz = yStart + lineLength;
+    firstEventElts['connection'].transition()
+        .duration(1000)
+        .ease(d3.easeLinear)
+        .attr('d', line([
+            [xCenter, yStart],
+            [xCenter, y_sz]
+        ]));
+
+    var nameLines = ('nameLines' in item) ? item['nameLines'] : 1;
+    y_sz += padding + nameLines * nameHeight;
+    firstEventElts['name'].transition()
+        .duration(1000)
+        .ease(d3.easeLinear)
+        .attr('x', xCenter)
+        .attr('y', y_sz - (nameLines - 1) * nameHeight);
+
+    childNames = firstEventElts['name'].selectAll('tspan');
+    childNames.transition()
+        .duration(1000)
+        .ease(d3.easeLinear)
+        .attr('x', xCenter)
+        .attr('y', y_sz - (nameLines - 1) * nameHeight);
+
+    y_sz += padding + dateHeight;
+    firstEventElts['date'].transition()
+        .duration(1000)
+        .ease(d3.easeLinear)
+        .attr('x', xCenter)
+        .attr('y', y_sz);
+
+    if ('image' in item && item['image'] !== '') {
+        y_sz += padding + imageSize;
+        firstEventElts['image'].transition()
+            .duration(1000)
+            .ease(d3.easeLinear)
+            .attr('x', xCenter - (imageSize / 2))
+            .attr('y', y_sz - imageSize);
+    }
+
+    var textLines = ('textLines' in item) ? item['textLines'] : 3;
+    y_sz += padding + textLines * textHeight;
+    firstEventElts['text'].transition()
+        .duration(1000)
+        .ease(d3.easeLinear)
+        .attr('fill', crimson)
+        .attr('x', xCenter)
+        .attr('y', y_sz - (textLines - 1) * textHeight);
+   
+    // children lines are stored in "tspans" to allow for wrapping, move those
+    childTexts = firstEventElts['text'].selectAll('tspan');
+    childTexts.transition()
+        .duration(1000)
+        .ease(d3.easeLinear)
+        .attr('x', xCenter)
+        .attr('y', y_sz - (textLines - 1) * textHeight);
+
+    y_sz += 2 * padding + circleSize;
+    firstEventElts['point'].transition()
+        .duration(1000)
+        .ease(d3.easeLinear)
+        .attr('cx', xCenter)
+        .attr('cy', y_sz);
+}
+
+// displays a timeline event located at (x, y)
+function displayItem(svg, item, x, y, opacity) {
+    var items = []; // list of all items created, to be returned 
+
+    var xCenter = x + (timelineWidth / 2);
+    var y_sz = y;
+
+    // draw the connecting line
+    var lineLength = tickLength * item['distance'];
+    y_sz += lineLength;
+    var connection = svg.append('path')
+        .attr('d', line([
+            [xCenter, y],
+            [xCenter, y_sz]
+        ]))
+        .attr('stroke', timelineColor)
+        .style('opacity', opacity)
+        .attr('stroke-width', 3);
+    firstEventElts['connection'] = connection;
+    items.push(connection);
+    
+    // show the event name
+    var nameLines = ('nameLines' in item) ? item['nameLines'] : 1;
+    y_sz += padding + nameLines * nameHeight;
+    var name = svg.append('text')
+        .attr('x', xCenter)
+        .attr('y', y_sz - (nameLines - 1) * nameHeight)
+        .attr('width', 0.9 * timelineWidth)
+        .attr('height', nameLines * nameHeight)
+        .style('font-family', nameFont)
+        .style('font-size', nameSize)
+        .style('text-anchor', 'middle')
+        .style('fill', nameColor)
+        .style('opacity', opacity)
+        .text(item['name'])
+        .call(wrap, 0.9 * timelineWidth);
+    firstEventElts['name'] = name;
+    items.push(name);
+    items.push(name.selectAll('tspan'));
+
+    // show the event date
+    y_sz += padding + dateHeight;
+    var date = svg.append('text')
+        .attr('x', xCenter)
+        .attr('y', y_sz)
+        .attr('width', timelineWidth)
+        .attr('height', dateHeight)
+        .style('font-family', dateFont)
+        .style('font-size', dateSize)
+        .style('text-anchor', 'middle')
+        .style('fill', dateColor)
+        .style('opacity', opacity)
+        .text(item['date']);
+    firstEventElts['date'] = date;
+    items.push(date);
+
+    // show the image, if there is one
+    if ('image' in item && item['image'] !== '') {
+        y_sz += padding + imageSize;
+        var image = svg.append('image')
+            .attr(imgMethod, item['image'])
+            .attr('x', xCenter - (imageSize / 2))
+            .attr('y', y_sz - imageSize)
+            .attr('width', imageSize)
+            .attr('height', imageSize)
+            .style('opacity', opacity)
+        firstEventElts['image'] = image;
+        items.push(image);
+    }
+
+    // show the description
+    var textLines = ('textLines' in item) ? item['textLines'] : 3;
+    y_sz += padding + textLines * textHeight;
+    var description = svg.append('text')
+        .attr('x', xCenter)
+        .attr('y', y_sz - (textLines - 1) * textHeight)
+        .attr('width', timelineWidth * 0.9)
+        .attr('height', textLines * textHeight)
+        .style('font-family', textFont)
+        .style('font-size', textSize)
+        .style('text-anchor', 'middle')
+        .style('fill', textColor)
+        .style('opacity', opacity)
+        .text(item['text'])
+        .call(wrap, timelineWidth * 0.9);
+    firstEventElts['text'] = description;
+    items.push(description);
+    items.push(description.selectAll('tspan'));
+
+    // show a point at the bottom
+    y_sz += 2 * padding + circleSize;
+    var point = svg.append('circle')
+        .attr('cx', xCenter)
+        .attr('cy', y_sz)
+        .attr('r', circleSize / 2)
+        .attr('fill', timelineColor)
+        .style('opacity', opacity);
+    firstEventElts['point'] = point;
+    items.push(point);
+
+    return items;
+}
+
+function eventHeight(item) {
+    var y_sz = 0;
+    y_sz += tickLength * item['distance']; // distance
+    var nameLines = ('nameLines' in item) ? item['nameLines'] : 1;
+    y_sz += padding + nameLines * nameHeight; // name
+    y_sz += padding + dateHeight; // date
+    if ('image' in item && item['image'] !== '')
+        y_sz += padding + imageSize; // image size
+    var textLines = ('textLines' in item) ? item['textLines'] : 3;
+    y_sz += padding + textLines * textHeight; // text
+    y_sz += 2 * padding + circleSize; // circle
+    return y_sz;
+}
+
+function totalEventHeight(data) {
+    var max = null;
+    for (var i = 0; i < data.length; i++) {
+        var curHeight = 0;
+        for (var j = 0; j < data[i].length; j++) {
+            curHeight += eventHeight(data[i][j]);
+        }
+        if (max === null || curHeight > max)
+            max = curHeight;
+    }
+    return max;
+}
+</script>
+</html>

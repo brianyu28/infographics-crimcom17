@@ -1,7 +1,7 @@
 var data = [
     {
         "name": "David Rubenstein",
-        "image": "img/rubenstein.png",
+        "image": "http://media.thecrimson.com/widgets/corporation/img/rubenstein.png",
         "locations": {
             "initial": [300, 75],
             "profession": [200, 125],
@@ -12,18 +12,18 @@ var data = [
     },
     {
         "name": "William F. Lee",
-        "image": "img/lee.png",
+        "image": "http://media.thecrimson.com/widgets/corporation/img/lee.png",
         "locations": {
             "initial": [75, 200],
             "profession": [30, 460],
-            "alumni": [440, 120],
+            "alumni": [450, 40],
             "appointed": [230, 60],
             "experience": [30, 80]
         }
     },
     {
         "name": "Lawrence S. Bacow",
-        "image": "img/bacow.png",
+        "image": "http://media.thecrimson.com/widgets/corporation/img/bacow.png",
         "locations": {
             "initial": [225, 200],
             "profession": [300, 250],
@@ -34,7 +34,7 @@ var data = [
     },
     {
         "name": "James W. Breyer",
-        "image": "img/breyer.png",
+        "image": "http://media.thecrimson.com/widgets/corporation/img/breyer.png",
         "locations": {
             "initial": [375, 200],
             "profession": [40, 60],
@@ -45,18 +45,18 @@ var data = [
     },
     {
         "name": "Kenneth I. Chenault",
-        "image": "img/chenault.png",
+        "image": "http://media.thecrimson.com/widgets/corporation/img/chenault.png",
         "locations": {
             "initial": [525, 200],
             "profession": [130, 70],
             "alumni": [340, 300],
             "appointed": [130, 440],
-            "experience": [240, 420]
+            "experience": [150, 410]
         }
     },
     {
         "name": "Jessica Tuchman Mathews",
-        "image": "img/mathews.png",
+        "image": "http://media.thecrimson.com/widgets/corporation/img/mathews.png",
         "locations": {
             "initial": [225, 325],
             "profession": [350, 60],
@@ -67,40 +67,40 @@ var data = [
     },
     {
         "name": "Paul J. Finnegan",
-        "image": "img/finnegan.png",
+        "image": "http://media.thecrimson.com/widgets/corporation/img/finnegan.png",
         "locations": {
             "initial": [75, 325],
             "profession": [20, 145],
-            "alumni": [450, 40],
+            "alumni": [210, 210],
             "appointed": [50, 210],
             "experience": [80, 155]
         }
     },
     {
         "name": "Karen Gordon Mills",
-        "image": "img/mills.png",
+        "image": "http://media.thecrimson.com/widgets/corporation/img/mills.png",
         "locations": {
             "initial": [375, 325],
             "profession": [430, 100],
-            "alumni": [150, 220],
+            "alumni": [120, 220],
             "appointed": [30, 450],
             "experience": [210, 50]
         }
     },
     {
         "name": "Joseph J. O'Donnell",
-        "image": "img/odonnell.png",
+        "image": "http://media.thecrimson.com/widgets/corporation/img/odonnell.png",
         "locations": {
             "initial": [525, 325],
             "profession": [110, 155],
-            "alumni": [60, 210],
+            "alumni": [30, 210],
             "appointed": [490, 70],
-            "experience": [150, 410]
+            "experience": [170, 150]
         }
     },
     {
         "name": "Susan L. Graham",
-        "image": "img/graham.png",
+        "image": "http://media.thecrimson.com/widgets/corporation/img/graham.png",
         "locations": {
             "initial": [75, 450],
             "profession": [370, 320],
@@ -111,7 +111,7 @@ var data = [
     },
     {
         "name": "Nannerl O. Keohane",
-        "image": "img/keohane.png",
+        "image": "http://media.thecrimson.com/widgets/corporation/img/keohane.png",
         "locations": {
             "initial": [225, 450],
             "profession": [470, 310],
@@ -122,7 +122,7 @@ var data = [
     },
     {
         "name": "Shirley M. Tilghman",
-        "image": "img/tilghman.png",
+        "image": "http://media.thecrimson.com/widgets/corporation/img/tilghman.png",
         "locations": {
             "initial": [375, 450],
             "profession": [285, 335],
@@ -133,7 +133,7 @@ var data = [
     },
     {
         "name": "Theodore V. Wells, Jr.",
-        "image": "img/wells.png",
+        "image": "http://media.thecrimson.com/widgets/corporation/img/wells.png",
         "locations": {
             "initial": [525, 450],
             "profession": [120, 450],
