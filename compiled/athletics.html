@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="https://fonts.googleapis.com/css?family=Merriweather" rel="stylesheet">
+        <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+    </head>
+    <body>
+        <div id="roundtable">
+        </div>
+    </body>
+<script>
+var roundtableTitle = 'The Year in Athletics';
+var pulsationSize = 3;
+var data = [
+    {
+        'name': 'Men\'s Soccer',
+        'image': 'http://media.thecrimson.com/widgets/athletics/mens_soccer.png',
+        'description': 'A Crimson report on a sexually-explicit scouting report produced by the 2012 Harvard men\'s soccer team spurred the University to investigate whether the current team continued the practice. After finding the vulgar tradition had continued, Harvard canceled the team\'s season.'
+    },
+    {
+        'name': 'Men\'s Cross Country',
+        'image': 'http://media.thecrimson.com/widgets/athletics/mens_cross_country.png',
+        'description': 'On Nov. 6, reports revealed that past men\'s cross country teams had produced spreadsheets on the women\'s team, some containing "sexually explicit" comments, about members of the women\'s team. After a University investigation, the team was placed on "athletic probation."'
+    },
+    {
+        'name': 'Women\'s Cross Country',
+        'image': 'http://media.thecrimson.com/widgets/athletics/womens_cross_country.png',
+        'description': 'Harvard\'s office of human resources began an assessment of the women\'s cross country and track programs in the fall after faculty and current and former student athletes voiced concerns about team culture and the alleged behavior of distance coach Patrick Wales-Dinan.'
+    },
+    {
+        'name': 'Women\'s Rugby',
+        'image': 'http://media.thecrimson.com/widgets/athletics/womens_rugby.png',
+        'description': 'Several affiliates of the Women\'s rugby program repeatedly raised concerns about the Athletics Department in letters to University President Drew G. Faust. Among other concerns, they argued that the Department was plagued by an "intrinsic culture of sexism."'
+    }
+];
+// basic colors
+var crimson = '#a82931';
+var blue1 = '#004e6a';
+var blue2 = '#7799b7';
+var blue3 = '#b0cfe7';
+var green = '#298848';
+var yellow = '#dbd300';
+var white = '#ffffff';
+var black = '#000000';
+
+// fonts
+var labelFontSize = 10;
+var headlineFontSize = 24;
+var descriptionFontSize = 12;
+
+// color assignments
+var bgColor = white;
+var textColor = black;
+var glowColor = yellow;
+
+// size constants
+var enforcedWidth = 600;
+var maxWidth = 1000;
+var mobileThreshold = 450;
+var aspectRatio = 5/3;
+var semicircleStart = 1/2; // semicircle starts 1/2 way down view
+
+var horizontalLabelPadding = 15;
+var verticalLabelPadding = 15;
+var maxCircleSize = 80;
+var glowSize = 15;
+
+var detailHeadPadding = 30;
+var detailHeadHeight = 90;
+
+var mainFont = '"Merriweather", serif';
+
+// strings
+var instructions = 'Click on a team above to see details.';
+function dist(x1, y1, x2, y2) {
+    var a = x1 - x2;
+    var b = y1 - y2;
+    return Math.sqrt(a*a + b*b);
+}
+
+// gets the coordiantes of a point on semicircle 
+function semicircleCoords(width, height, proportion) {
+
+    // origin of the cicle
+    var originX = width / 2;
+    var originY = height;
+    
+    // leftmost and rightmost points along semicircle
+    var leftmostX = circleSize;
+    var leftmostY = semicircleStart * height;
+    var rightmostX = width - circleSize;
+    
+    // angle and distance from origin to leftmost and rightmost angles
+    var leftAngle = Math.atan((originY - leftmostY) / (originX - leftmostX));
+    var rightAngle = Math.PI - leftAngle;
+    var semicircleRadius = dist(originX, originY, leftmostX, leftmostY);
+
+    // compute desired angle
+    var desiredAngle = (proportion * (rightAngle - leftAngle)) + leftAngle;
+
+    // compute desired x and y values
+    var x = originX - semicircleRadius * Math.cos(desiredAngle);
+    var y = originY - semicircleRadius * Math.sin(desiredAngle);
+    
+    return [x, y];
+}
+
+function boundBy(x, lower, upper) {
+    if (x < lower)
+        return lower;
+    else if (x > upper)
+        return upper;
+    else
+        return x;
+}
+
+function px(x) {
+    return x + 'px';
+}
+
+function min(a, b) {
+    return a < b ? a : b;
+}
+
+function wrap(text, width) {
+    text.each(function () {
+        var text = d3.select(this),
+            words = text.text().split(/\s+/).reverse(),
+            word,
+            line = [],
+            lineNumber = 0,
+            lineHeight = 1.1, // ems
+            x = text.attr("x"),
+            y = text.attr("y"),
+            dy = 0, //parseFloat(text.attr("dy")),
+            tspan = text.text(null)
+                        .append("tspan")
+                        .attr("x", x)
+                        .attr("y", y)
+                        .attr("dy", dy + "em");
+        while (word = words.pop()) {
+            line.push(word);
+            tspan.text(line.join(" "));
+            if (tspan.node().getComputedTextLength() > width) {
+                line.pop();
+                tspan.text(line.join(" "));
+                line = [word];
+                tspan = text.append("tspan")
+                            .attr("x", x)
+                            .attr("y", y)
+                            .attr("dy", ++lineNumber * lineHeight + dy + "em")
+                            .text(word);
+            }
+        }
+    });
+}
+var viewWidth = 0;
+var viewHeight;
+var detailX;
+var detailY;
+var detailWidth;
+var detailHeight;
+
+var numPoints;
+var circleSize;
+var maxRadius;
+var radius;
+var selectedIndex = -1;
+var centers_x = [];
+var centers_y = [];
+var points = [];
+
+var currentDetail = []; // elements currently in detail view
+
+window.onload = function() {
+    var svg = setup();
+    render(svg);
+    showTitle(svg);
+}
+
+function setup() {
+
+    numPoints = data.length;
+    
+    var canvas = d3.select('div#roundtable');
+    canvas.style('width', px(enforcedWidth));
+
+    curWidth = enforcedWidth;
+    viewWidth = curWidth;
+    viewHeight = viewWidth / aspectRatio;
+
+    var svg = canvas.append('svg')
+        .style('width', px(viewWidth))
+        .style('height', px(viewHeight))
+
+    circleSize = min(maxCircleSize, viewWidth / (numPoints + 3));
+    maxRadius = circleSize + pulsationSize;
+    for (var i = 0; i < numPoints; i++) {
+        var proportion = i / (numPoints - 1);
+        var coords = semicircleCoords(viewWidth, viewHeight, proportion);
+        centers_x.push(coords[0]);
+        centers_y.push(coords[1]);
+    }
+
+    var mainRadius = dist(viewWidth/2, viewHeight, circleSize, semicircleStart * viewHeight);
+    detailHeight = mainRadius * Math.sin(Math.PI / 4);
+    detailWidth = detailHeight * 2;
+    detailX = (viewWidth / 2) - detailHeight;
+    detailY = viewHeight - detailHeight;
+
+    return svg;
+}
+
+function render(svg) {
+
+    // fill background
+    var background = svg.append('rect')
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('width', viewWidth)
+        .attr('height', viewHeight)
+        .style('fill', bgColor);
+
+    for (var i = 0; i < numPoints; i++) {
+        radius = circleSize; 
+        var point = drawPoint(svg, i, radius);
+        points.push(point);
+    }
+}
+
+function drawPoint(svg, i, radius) {
+    var additionalVerticalPadding = 0;
+
+    var point = svg.append('image')
+        .attr('xlink:href', data[i]['image'])
+        .attr('x', centers_x[i] - (radius / 2))
+        .attr('y', centers_y[i] - (radius / 2))
+        .attr('width', radius)
+        .attr('height', radius);
+
+    point.transition()
+        .duration(i * 200)
+        .on('end', animatePoint);
+
+    point.on('click', function() {
+        showDetail(svg, i);
+    });
+
+    function animatePoint() {
+        // animate the point
+        point.transition()
+            .duration(1000)
+            .attr('width', radius + pulsationSize)
+            .attr('height', radius + pulsationSize)
+            .attr('x', centers_x[i] - ((radius + pulsationSize) / 2))
+            .attr('y', centers_y[i] - ((radius + pulsationSize) / 2))
+            .ease(d3.easeLinear)
+            .transition()
+            .duration(1000)
+            .attr('width', radius)
+            .attr('height', radius)
+            .attr('x', centers_x[i] - (radius / 2))
+            .attr('y', centers_y[i] - (radius / 2))
+            .ease(d3.easeLinear)
+            .on('end', animatePoint);
+    }
+
+    // show text
+    var label = svg.append('text')
+        .attr('x', centers_x[i])
+        .attr('y', centers_y[i] + (maxRadius / 2) + verticalLabelPadding + additionalVerticalPadding)
+        .attr('width', maxRadius + 2 * horizontalLabelPadding)
+        .attr('height', maxRadius)
+        .style('font-family', mainFont)
+        .style('font-size', labelFontSize)
+        .style('fill', textColor)
+        .style('text-anchor', 'middle')
+        .text(function() { return data[i]['name']; });
+
+    return point;
+}
+
+var glowList = [];
+function showDetail(svg, i) {
+    // don't do anything if clicked again
+    if (selectedIndex === i) {
+        return;
+    }
+    selectedIndex = i;
+
+    // remove glow  
+    for (var j = 0; j < glowList.length; j++) {
+        glowList[j].remove();
+    }
+    glowList = [];
+
+    // remove anything in detail view
+    for (var j = 0; j < currentDetail.length; j++) {
+        currentDetail[j].remove();
+    }
+    currentDetail = [];
+    
+    for (var j = 0; j < glowSize; j++) {
+        var circleSize = (radius / 2) + j;
+        glow = svg.insert('circle', 'image')
+            .attr('cx', centers_x[i])
+            .attr('cy', centers_y[i])
+            .attr('r', (radius / 2) + j)
+            .attr('stroke', glowColor)
+            .attr('stroke-opacity', 1 - (j / glowSize))
+            .attr('fill', 'none');
+        glowList.push(glow); 
+    }
+
+    var headlineFontSize = boundBy(11 + (viewWidth / 40.0), 11, 36);
+
+    // show person's name
+    var name = svg.append('text')
+        .attr('x', detailX + (detailWidth / 2))
+        .attr('y', detailY + detailHeadPadding)
+        .attr('width', detailWidth)
+        .attr('height', 50)
+        .attr('text-anchor', 'middle')
+        .attr('fill', textColor)
+        .attr('font-family', mainFont)
+        .attr('font-size', px(headlineFontSize))
+        .text(function() { return data[i]['name']; });
+    currentDetail.push(name);
+
+    // show person's image
+    var imgX = detailX + detailHeadPadding;
+    var imgY = detailY + boundBy(23 + (viewWidth / 15), 40, 90);
+    var image = svg.append('image')
+        .attr('xlink:href', data[i]['image'])
+        .attr('x', imgX)
+        .attr('y', imgY)
+        .attr('width', 0.3 * detailWidth)
+        .attr('height', 0.3 * detailWidth);
+    currentDetail.push(image);
+
+    // show description
+    var description = svg.append('text')
+        .attr('x', imgX + 0.4 * detailWidth)
+        .attr('y', imgY)
+        .attr('width', 0.5 * detailWidth)
+        .attr('height', 0.3 * detailWidth)
+        .attr('text-anchor', 'start')
+        .attr('font-family', mainFont)
+        .attr('font-size', px(descriptionFontSize))
+        .attr('fill', textColor)
+        .text(data[i]['description'])
+        .call(wrap, 0.45 * detailWidth);
+    currentDetail.push(description);
+
+}
+
+function showTitle(svg) {
+    
+    // show main headline
+    var headline = svg.append('text')
+        .attr('x', detailX + detailWidth / 2)
+        .attr('y', detailY + 0.3 * detailHeight)
+        .attr('width', detailWidth - 2 * detailHeadPadding)
+        .attr('height', 0.7 * detailHeight)
+        .attr('text-anchor', 'middle')
+        .attr('font-family', mainFont)
+        .attr('font-size', boundBy(11 + (viewWidth / 40), 11, 36))
+        .attr('fill', textColor)
+        .text(roundtableTitle);
+    currentDetail.push(headline);
+
+    // show instructions
+    var instructionText = svg.append('text')
+        .attr('x', detailX + detailWidth / 2)
+        .attr('y', detailY + 0.7 * detailHeight)
+        .attr('width', detailWidth - 2 * detailHeadPadding)
+        .attr('height', 0.3 * detailHeight)
+        .attr('text-anchor', 'middle')
+        .attr('font-family', mainFont)
+        .attr('font-size', descriptionFontSize)
+        .attr('fill', textColor)
+        .text(instructions);
+    currentDetail.push(instructionText);
+}
+</script>
+</html>
