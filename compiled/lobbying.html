@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="https://fonts.googleapis.com/css?family=Merriweather" rel="stylesheet">
+        <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+    </head>
+    <body>
+        <div id="lobbying-graphic">
+        </div>
+        &copy; The Harvard Crimson, 2017
+    </body>
+<script>
+var data = [
+    {
+        "name": "Sen. Al Franken",
+        "detail": "(D-MN)",
+        "image": "http://media.thecrimson.com/widgets/lobbying/franken.png",
+        "group": 1
+    },
+    {
+        "name": "Sen. Maggie Hassan",
+        "detail": "(D-NH)",
+        "image": "http://media.thecrimson.com/widgets/lobbying/hassan.png",
+        "group": 1
+    },
+    {
+        "name": "Sen. Susan Collins",
+        "detail": "(R-ME)",
+        "image": "http://media.thecrimson.com/widgets/lobbying/collins.png",
+        "group": 2
+    },
+    {
+        "name": "Sen. Patrick Leahy",
+        "detail": "(D-VT)",
+        "image": "http://media.thecrimson.com/widgets/lobbying/leahy.png",
+        "group": 1
+    },
+    {
+        "name": "Sen. Jack Reed",
+        "detail": "(D-RI)",
+        "image": "http://media.thecrimson.com/widgets/lobbying/reed.png",
+        "group": 1
+    },
+    {
+        "name": "Sen. Mike Crapo",
+        "detail": "(R-ID)",
+        "image": "http://media.thecrimson.com/widgets/lobbying/crapo.png",
+        "group": 2
+    },
+    {
+        "name": "Sen. Chuck Schumer",
+        "detail": "(D-NY)",
+        "image": "http://media.thecrimson.com/widgets/lobbying/schumer.png",
+        "group": 1
+    },
+    {
+        "name": "Sen. Orrin Hatch",
+        "detail": "(R-UT)",
+        "image": "http://media.thecrimson.com/widgets/lobbying/hatch.png",
+        "group": 2
+    },
+    {
+        "name": "Sen. Mitch McConnell",
+        "detail": "(R-KY)",
+        "image": "http://media.thecrimson.com/widgets/lobbying/mcconnell.png",
+        "group": 2
+    },
+    {
+        "name": "Sen. Chris Van Hollen",
+        "detail": "(D-MD)",
+        "image": "http://media.thecrimson.com/widgets/lobbying/vanhollen.png",
+        "group": 1
+    },
+    {
+        "name": "Sen. Ben Sasse",
+        "detail": "(R-NE)",
+        "image": "http://media.thecrimson.com/widgets/lobbying/sasse.png",
+        "group": 2
+    },
+    {
+        "name": "Rep. Kevin Brady",
+        "detail": "(R-TX 8th District)",
+        "image": "http://media.thecrimson.com/widgets/lobbying/brady.png",
+        "group": 2
+    },
+    {
+        "name": "Rep. Ron Kind",
+        "detail": "(D-WI 3rd District)",
+        "image": "http://media.thecrimson.com/widgets/lobbying/kind.png",
+        "group": 1
+    },
+    {
+        "name": "Rep. Paul Ryan",
+        "detail": "(R-WI 1st District)",
+        "image": "http://media.thecrimson.com/widgets/lobbying/ryan.png",
+        "group": 2
+    },
+    {
+        "name": "Rep. Scott Taylor",
+        "detail": "(R-VA 2nd District)",
+        "image": "http://media.thecrimson.com/widgets/lobbying/taylor.png",
+        "group": 2
+    },
+];
+
+var graphicWidth = 600;
+var padding = 15;
+var glowSize = 15;
+
+var textSize = 12;
+
+var imageSize = 120;
+var imagesPerRow = 3;
+
+var crimson = '#a82931';
+var blue1 = '#004e6a';
+var blue2 = '#7799b7';
+var blue3 = '#b0cfe7';
+var green = '#298848';
+var yellow = '#dbd300';
+var white = '#ffffff';
+var black = '#000000';
+
+var timelineColor = black;
+var textColor = white;
+var buttonColor = blue2;
+
+var mainFont = '"Merriweather", serif';
+function px(x) {
+    return x + 'px';
+}
+
+var line = d3.line()
+    .x(function(d) { return d[0]; })
+    .y(function(d) { return d[1]; });
+
+
+function disableSelection(text) {
+    text.style('-webkit-touch-callout', 'none')
+        .style('-webkit-user-select', 'none')
+        .style('-khtml-user-select', 'none')
+        .style('-moz-user-select', 'none')
+        .style('-ms-user-select', 'none')
+        .style('-o-user-select', 'none')
+        .style('user-select', 'none')
+}
+
+// adapted text wrap function
+function wrap(text, width) {
+    text.each(function () {
+        var text = d3.select(this),
+            words = text.text().split(/\s+/).reverse(),
+            word,
+            line = [],
+            lineNumber = 0,
+            lineHeight = 1.1, // ems
+            x = text.attr("x"),
+            y = text.attr("y"),
+            dy = 0, //parseFloat(text.attr("dy")),
+            tspan = text.text(null)
+                        .append("tspan")
+                        .attr("x", x)
+                        .attr("y", y)
+                        .attr("dy", dy + "em");
+        while (word = words.pop()) {
+            line.push(word);
+            tspan.text(line.join(" "));
+            if (tspan.node().getComputedTextLength() > width) {
+                line.pop();
+                tspan.text(line.join(" "));
+                line = [word];
+                tspan = text.append("tspan")
+                            .attr("x", x)
+                            .attr("y", y)
+                            .attr("dy", ++lineNumber * lineHeight + dy + "em")
+                            .text(word);
+            }
+        }
+    });
+}
+window.onload = function() {
+    render();
+};
+
+var originX = 0;
+var originY = 0;
+
+var rows; // number of rows
+var colLength;
+
+function render() {
+    var canvas = d3.select('#lobbying-graphic')
+        .style('width', px(graphicWidth));
+    makeHeadline(canvas);
+
+    rows = Math.ceil(data.length / imagesPerRow);
+    var requiredHeight = (rows + 1) * (2 * padding) + (rows * imageSize);
+    var svg = canvas.append('svg')
+        .style('width', px(graphicWidth))
+        .style('height', px(requiredHeight))
+        .style('margin-left', px(padding))
+        .style('margin-right', px(padding));
+   
+    colLength = graphicWidth / imagesPerRow;
+    var endPadding = colLength - imageSize;
+    var baseX = originX + colLength - (endPadding / 2) - imageSize;
+    var currentX = baseX;
+    var currentY = originY + 2 * padding;
+
+    for (var i = 0; i < data.length; i++) {
+    
+        // reset x and y to a new row if we need to
+        if (i % imagesPerRow === 0) {
+            currentX = baseX;
+            if (i !== 0)
+                currentY += imageSize + 2 * padding;
+        }
+    
+        drawPoint(svg, currentX, currentY, i);
+        currentX += colLength;
+    }
+}
+
+function makeHeadline(canvas) {
+    // show primary headline 
+    var headline = canvas.append('div')
+        .style('margin-left', px(padding))
+        .style('margin-right', px(padding))
+        .style('text-align', 'center')
+        .style('font-size', px(28))
+        .style('font-family', mainFont)
+        .text('Lawmakers University President Drew G. Faust has met with recently');
+
+}
+
+function drawPoint(svg, x, y, i) {
+    var image = svg.append('image')
+        .attr('xlink:href', data[i]['image'])
+        .attr('x', x)
+        .attr('y', y)
+        .attr('width', imageSize)
+        .attr('height', imageSize)
+        .on('mouseover', function() {
+            showDetail(svg, i, x, y);
+        })
+        .on('mouseout', function() {
+            hideDetail();
+        });
+    animate(svg, image, data[i]['group']);
+}
+
+details = [];
+
+function showDetail(svg, i, x, y) {
+
+    group = parseInt(data[i]['group']);
+
+    hideDetail();
+    
+    var rectWidth = 150;
+    var rectHeight = 40;
+
+    var rectX;
+    var column = Math.floor(x / (colLength + 2 * padding));
+    if (column < (imagesPerRow - 1) / 2)
+        rectX = x + 0.75 * imageSize;
+    else if (column > (imagesPerRow - 1) / 2)
+        rectX = x + 0.25 * imageSize - rectWidth;
+    else
+        rectX = x + 0.5 * imageSize - (rectWidth / 2);
+
+    var rectY;
+    var row = Math.floor(i / imagesPerRow);
+    if (row > (rows - 1) / 2)
+        rectY = y - 0.25 * imageSize;
+    else if (row < (rows - 1) / 2)
+        rectY = y + 0.75 * imageSize;
+    else
+        rectY = y;
+
+    rectX = x + (imageSize / 2) - (rectWidth / 2);
+    rectY = y + (imageSize) - (rectHeight / 2);
+    var rect = svg.append('rect')
+        .attr('x', rectX)
+        .attr('y', rectY)
+        .attr('width', rectWidth)
+        .attr('height', rectHeight)
+        .attr('fill', colorForGroup(group));
+    details.push(rect);
+
+    var name = svg.append('text')
+        .attr('x', rectX + (rectWidth / 2))
+        .attr('y', rectY + (2 * rectHeight / 5))
+        .attr('width', rectWidth)
+        .attr('height', rectHeight)
+        .style('font-family', mainFont)
+        .style('font-size', textSize)
+        .style('text-anchor', 'middle')
+        .style('fill', textColor)
+        .text(data[i]['name']);
+    details.push(name);
+
+    var detail = svg.append('text')
+        .attr('x', rectX + (rectWidth / 2))
+        .attr('y', rectY + (4 * rectHeight / 5))
+        .attr('width', rectWidth)
+        .attr('height', rectHeight)
+        .style('font-family', mainFont)
+        .style('font-size', textSize)
+        .style('text-anchor', 'middle')
+        .style('fill', textColor)
+        .text(data[i]['detail']);
+    details.push(detail);
+};
+
+function hideDetail() {
+    for (var i = 0; i < details.length; i++) {
+        details[i].remove();
+    }
+    details = [];
+}
+
+function colorForGroup(i) {
+    if (i == 1)
+        return blue1;
+    else if (i == 2)
+        return crimson;
+    else
+        return green;
+}
+
+function animate(svg, point, group) {
+    for (var i = -5; i < glowSize; i++) {
+        var circleSize = (imageSize / 2) + i;
+        var glow = svg.insert('circle', 'image')
+            .attr('cx', parseFloat(point.attr('x')) + parseFloat(point.attr('width'))/2)
+            .attr('cy', parseFloat(point.attr('y')) + parseFloat(point.attr('height'))/2)
+            .attr('r', circleSize)
+            .style('fill', 'none')
+            .style('stroke', colorForGroup(group))
+            .style('stroke-opacity', 1 - (i / glowSize));
+    }
+}
+</script>
+</html>
